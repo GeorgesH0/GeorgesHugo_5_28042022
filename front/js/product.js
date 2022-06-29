@@ -27,36 +27,38 @@ fetch("http://localhost:3000/api/products/" + id )
            colorSelect.innerHTML += "<option value=" + colors[i] + ">" + colors[i] + "</option>"
            };
     });
-
+//-----écoute des deux options disponibles
  colorSelect.addEventListener('change', (event)=>{
      let option = event.target.value
      console.log(option);
  });
+ let option = colorSelect;
  number.addEventListener('input', ()=>{
      let chiffres = number.value
      console.log(chiffres);
  });
-
-   let produit = [
-    id,
-    option,
-    chiffres,
-   ];
-   console.log(produit);
+//----écoute du bouton pour ajouter dans le panier
  ajout.addEventListener('click', (event)=>{
      event.preventDefault()
  let myStorage = localStorage;
+//----création du produit que je vais ajouter dans le panier
+ let produit = {
+    idProduit: id.idProduit,
+    colors: option.value,
+    quantite: number.value,
+   };
+   console.log(produit);
 
 
 let saveProductLocalStorage = JSON.parse(localStorage.getItem("produit"));
 console.log(saveProductLocalStorage);
 
 if(saveProductLocalStorage){
-    saveProductLocalStorage.push(produit());
+    saveProductLocalStorage.push(produit);
     localStorage.setItem("produit", JSON.stringify(saveProductLocalStorage));
 }else{
     saveProductLocalStorage = [];
-    saveProductLocalStorage.push(produit());
+    saveProductLocalStorage.push(produit);
     localStorage.setItem("produit", JSON.stringify(saveProductLocalStorage));
 
     console.log(saveProductLocalStorage);
