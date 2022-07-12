@@ -40,18 +40,26 @@ fetch("http://localhost:3000/api/products/" + id )
 //----écoute du bouton pour ajouter dans le panier
  ajout.addEventListener('click', (event)=>{
      event.preventDefault()
- let myStorage = localStorage;
 //----création du produit que je vais ajouter dans le panier
  let produit = {
-    idProduit: id.idProduit,
+    idProduit: id,
     colors: option.value,
     quantite: number.value,
    };
    console.log(produit);
 
-
 let saveProductLocalStorage = JSON.parse(localStorage.getItem("produit"));
 console.log(saveProductLocalStorage);
+
+function checkPanier (produit){
+    for (let i = 0; i < saveProductLocalStorage.length; i++){
+    let panierId = saveProductLocalStorage[i].idProduit;
+    let panierColor = saveProductLocalStorage[i].colors;
+    if (panierId === produit.idProduit && panierColor === produit.colors){
+        
+    }
+ }
+}
 
 if(saveProductLocalStorage){
     saveProductLocalStorage.push(produit);
