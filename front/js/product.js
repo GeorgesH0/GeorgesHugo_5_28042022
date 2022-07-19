@@ -48,15 +48,20 @@ fetch("http://localhost:3000/api/products/" + id )
    };
    console.log(produit);
 
-let saveProductLocalStorage = JSON.parse(localStorage.getItem("produit"));
-console.log(saveProductLocalStorage);
-
+//----fonction qui va permettre de ne pas ajouter plusieurs fois le même produit
 function checkPanier (produit){
+    let saveProductLocalStorage = JSON.parse(localStorage.getItem("produit"));
+    console.log(saveProductLocalStorage);
     for (let i = 0; i < saveProductLocalStorage.length; i++){
     let panierId = saveProductLocalStorage[i].idProduit;
     let panierColor = saveProductLocalStorage[i].colors;
     if (panierId === produit.idProduit && panierColor === produit.colors){
-        
+        saveProductLocalStorage.push(this.quantite);
+    }else if (panierId === produit.idProduit ){
+        saveProductLocalStorage.push(this.colors);
+        saveProductLocalStorage.push(this.quantite);
+    }else{
+        saveProductLocalStorage.push(produit);
     }
  }
 }
