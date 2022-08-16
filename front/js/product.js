@@ -37,45 +37,53 @@ fetch("http://localhost:3000/api/products/" + id )
      let chiffres = number.value
      console.log(chiffres);
  });
+ 
 //----écoute du bouton pour ajouter dans le panier
  ajout.addEventListener('click', (event)=>{
-     event.preventDefault()
+    event.preventDefault()
 //----création du produit que je vais ajouter dans le panier
- let produit = {
-    idProduit: id,
-    colors: option.value,
-    quantite: number.value,
-   };
-   console.log(produit);
-
+    let produit = {
+        idProduit: id,
+        color: option.value,
+        quantite: number.value,
+       };
+       console.log(produit);
+    
+     let saveProductLocalStorage = JSON.parse(localStorage.getItem("produit"));
+       console.log(saveProductLocalStorage);
+    
 //----fonction qui va permettre de ne pas ajouter plusieurs fois le même produit
-function checkPanier (produit){
-    let saveProductLocalStorage = JSON.parse(localStorage.getItem("produit"));
-    console.log(saveProductLocalStorage);
-    for (let i = 0; i < saveProductLocalStorage.length; i++){
-    let panierId = saveProductLocalStorage[i].idProduit;
-    let panierColor = saveProductLocalStorage[i].colors;
-    if (panierId === produit.idProduit && panierColor === produit.colors){
-        saveProductLocalStorage.push(this.quantite);
-    }else if (panierId === produit.idProduit ){
-        saveProductLocalStorage.push(this.colors);
-        saveProductLocalStorage.push(this.quantite);
-    }else{
-        saveProductLocalStorage.push(produit);
+    function checkPanier (produit){
+        for (let i = 0; i < saveProductLocalStorage.length; i++){
+            console.log("test");
+            let panierId = saveProductLocalStorage[i].idProduit;
+            let panierColor = saveProductLocalStorage[i].color;
+            if (panierId === produit.idProduit && panierColor === produit.color){
+                let localQty = parseInt(saveProductLocalStorage[i].quantite);
+                let produitQty = parseInt(produit.quantite);
+                localQty += produitQty;
+                saveProductLocalStorage[i].quantite = localQty;
+                localStorage.setItem("produit", JSON.stringify(saveProductLocalStorage));
+                console.log("toto");
+                return
+            }else {
+                saveProductLocalStorage.push(produit);
+                localStorage.setItem("produit", JSON.stringify(saveProductLocalStorage));
+                return
+            }
+            
+        }
     }
- }
-}
-
-if(saveProductLocalStorage){
-    saveProductLocalStorage.push(produit);
-    localStorage.setItem("produit", JSON.stringify(saveProductLocalStorage));
-}else{
-    saveProductLocalStorage = [];
-    saveProductLocalStorage.push(produit);
-    localStorage.setItem("produit", JSON.stringify(saveProductLocalStorage));
-
-    console.log(saveProductLocalStorage);
-}
+    if(saveProductLocalStorage == null) {
+        saveProductLocalStorage = [];
+        saveProductLocalStorage.push(produit);
+        localStorage.setItem("produit", JSON.stringify(saveProductLocalStorage));
+    } else if (saveProductLocalStorage != null) {
+        checkPanier(produit);
+        localStorage.setItem("produit", JSON.stringify(saveProductLocalStorage));
+        
+    }
+    
 } );
 
 
