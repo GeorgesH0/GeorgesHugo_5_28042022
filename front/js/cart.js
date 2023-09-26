@@ -42,13 +42,12 @@ fetch("http://localhost:3000/api/products/" + canapeStorageJSON[i].idProduit )
         let articleClose = "</article>"
         cartItems.innerHTML += article + divImg + image + divImgClose + divContent + divDescription + titre + colors + price + divDescriptionClose + divSettings + divQuantity + quantity + numbers + divQuantityClose + divDelete + supprimer + divDeleteClose + divSettingsClose + divContentClose + articleClose
 
-            //getHtml(canapeStorageJSON[i].idProduit)
-            updateQuantite()
-            suppress()
-            getTotalQuantity()
-            getTotalPrice()
+        updateQuantite()
+        suppress()
+        getTotalQuantity()
+        getTotalPrice()
     })
-}
+};
 
 
 let vanish = document.getElementsByClassName('cart__item__content__settings__delete');
@@ -63,13 +62,13 @@ function suppress(){
             vanish[i].closest('.cart__item')
             let check = canapeStorageJSON;
             let erase = check.filter(p => p.idProduit != check.idProduit && p.color != check.color)
-            console.log(erase)
-            //console.log('okay')
-            localStorage.setItem('produit', JSON.stringify(canapeStorageJSON))
+            if (erase != undefined){
+                localStorage.setItem('produit', JSON.stringify(canapeStorageJSON))
+            }
         })
     }
 };
-
+console.log(canapeStorageJSON);
 //---fonction qui permets de modifier la quantité dans le panier
 function updateQuantite(){
     for (let i = 0; i < quantite.length; i++){
@@ -96,7 +95,7 @@ function getTotalQuantity(){
         number += parseInt(product.quantite,10);
     }
     return number;
-}
+};
 
 totalQuantity.innerHTML = getTotalQuantity();
 
@@ -118,35 +117,103 @@ function getTotalPrice(){
             //console.log(value.price);
           })
     }
-}
+};
 
 
-let prenom = document.querySelector("div.cart__order__form__question input[name='firstName']");
+let form = document.querySelector(".cart__order__form");
+let msg = document.getElementById("firstNameErrorMsg");
 
-function firstNameRegExp(){
-    let regPrenom = new regExp("^[a-zA-Z\-\é\è\ê\ë\ï\î]+$");
-   return regPrenom;
-}
-prenom.exec(firstNameRegExp());
+//--- Ecoute du Prénom
 
-/*let nom = document.querySelector("div.cart__order__form__question input[name='lastName']");
-nom.exec(firstNameRegExp(nom));
+form.firstName.addEventListener('change', function(){
+    validFirstName(this);
+})
 
-let adresse = document.querySelector("div.cart__order__form__question input[name='address']");
+//---- Validation du Prénom
 
-function adresseRegExp(adresse){
-    return adresse.exec("^[0-9 a-zA-Z\-\é\è\ê\ë\ï\î]+$");
-}
+const validFirstName = function(inputFirstName){
+    let regPrenom = new RegExp("^[a-zA-Z\-\é\è\ê\ë\ï\î]+$");
+    let testFirstName = regPrenom.test(inputFirstName.value);
+    let firstNameError = inputFirstName.nextElementSibling;
+    if (testFirstName) {
+        firstNameError.innerHTML = 'Valide';
+    } else {
+        firstNameError.innerHTML = 'Erreur de notation';
+    }
+};
 
-adresse.exec(adresseRegExp());
+//--- Ecoute du Nom
 
-let ville = document.querySelector("div.cart__order__form__question input[name='city']");
-ville.exec(firstNameRegExp(ville));
+form.lastName.addEventListener('change', function(){
+    validLastName(this);
+})
 
-let email = document.querySelector("div.cart__order__form__question input[name='email']");
+//---- Validation du Nom
 
-/*function emailRegExp(email){
-    return email.exec("^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))+$"))
-};*/
+const validLastName = function(inputLastName){
+    let regLastName = new RegExp("^[a-zA-Z\-\é\è\ê\ë\ï\î]+$");
+    let testLastName = regLastName.test(inputLastName.value);
+    let lastNameError = inputLastName.nextElementSibling;
+    if (testLastName) {
+        lastNameError.innerHTML = 'Valide';
+    } else {
+        lastNameError.innerHTML = 'Erreur de notation';
+    }
+};
 
-//----/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+//--- Ecoute de l'adresse
+
+form.address.addEventListener('change', function(){
+    validAddress(this);
+})
+
+//--- Validation de l'adresse
+
+const validAddress = function(inputAddress){
+    let regAddress = new RegExp("^[0-9]+ [a-zA-Z\-\é\è\ê\ë\ï\î ]+$");
+    let testAddress = regAddress.test(inputAddress.value);
+    let addressError = inputAddress.nextElementSibling;
+    if (testAddress) {
+        addressError.innerHTML = 'Valide';
+    } else {
+        addressError.innerHTML = 'Erreur de notation';
+    }
+};
+
+//--- Ecoute de la Ville
+
+form.city.addEventListener('change', function(){
+    validCity(this);
+})
+
+//--- Validation de la Ville
+
+const validCity = function(inputCity){
+    let regCity = new RegExp("^[a-zA-Z\-\é\è\ê\ë\ï\î ]+$");
+    let testCity = regCity.test(inputCity.value);
+    let cityError = inputCity.nextElementSibling;
+    if (testCity) {
+        cityError.innerHTML = 'Valide';
+    } else {
+        cityError.innerHTML = 'Erreur de notation';
+    }
+};
+
+//--- Ecoute de l'Email
+
+form.email.addEventListener('change', function(){
+    validEmail(this);
+})
+
+//--- Validation de l'Email
+
+const validEmail = function(inputEmail){
+    let regEmail = new RegExp("^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$","g");
+    let testEmail = regEmail.test(inputEmail.value);
+    let emailError = inputEmail.nextElementSibling;
+    if (testEmail) {
+        emailError.innerHTML = 'Valide';
+    } else {
+        emailError.innerHTML = 'Erreur de notation';
+    }
+};
