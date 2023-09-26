@@ -132,7 +132,7 @@ form.firstName.addEventListener('change', function(){
 //---- Validation du Prénom
 
 const validFirstName = function(inputFirstName){
-    let regPrenom = new RegExp("^[a-zA-Z\-\é\è\ê\ë\ï\î]+$");
+    let regPrenom = new RegExp("^[a-zA-Z\-\é\è\ê\ë\ï\î\ç\ù]+$");
     let testFirstName = regPrenom.test(inputFirstName.value);
     let firstNameError = inputFirstName.nextElementSibling;
     if (testFirstName) {
@@ -151,7 +151,7 @@ form.lastName.addEventListener('change', function(){
 //---- Validation du Nom
 
 const validLastName = function(inputLastName){
-    let regLastName = new RegExp("^[a-zA-Z\-\é\è\ê\ë\ï\î]+$");
+    let regLastName = new RegExp("^[a-zA-Z\-\é\è\ê\ë\ï\î\ç\ù]+$");
     let testLastName = regLastName.test(inputLastName.value);
     let lastNameError = inputLastName.nextElementSibling;
     if (testLastName) {
@@ -170,7 +170,7 @@ form.address.addEventListener('change', function(){
 //--- Validation de l'adresse
 
 const validAddress = function(inputAddress){
-    let regAddress = new RegExp("^[0-9]+ [a-zA-Z\-\é\è\ê\ë\ï\î ]+$");
+    let regAddress = new RegExp("^[0-9]+ [a-zA-Z\-\é\è\ê\ë\ï\î\ç ]+$");
     let testAddress = regAddress.test(inputAddress.value);
     let addressError = inputAddress.nextElementSibling;
     if (testAddress) {
@@ -189,7 +189,7 @@ form.city.addEventListener('change', function(){
 //--- Validation de la Ville
 
 const validCity = function(inputCity){
-    let regCity = new RegExp("^[a-zA-Z\-\é\è\ê\ë\ï\î ]+$");
+    let regCity = new RegExp("^[a-zA-Z\-\é\è\ê\ë\ï\î\ç\ù ]+$");
     let testCity = regCity.test(inputCity.value);
     let cityError = inputCity.nextElementSibling;
     if (testCity) {
@@ -208,7 +208,7 @@ form.email.addEventListener('change', function(){
 //--- Validation de l'Email
 
 const validEmail = function(inputEmail){
-    let regEmail = new RegExp("^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$","g");
+    let regEmail = new RegExp("^[a-zA-Z0-9.-_éèïëêîùç]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$","g");
     let testEmail = regEmail.test(inputEmail.value);
     let emailError = inputEmail.nextElementSibling;
     if (testEmail) {
