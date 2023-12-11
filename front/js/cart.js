@@ -3,6 +3,7 @@ let totalQuantity = document.getElementById('totalQuantity');
 let totalPrice = document.getElementById('totalPrice');
 
 //---récupération du localStorage
+
 let canapeStorage = localStorage.getItem('produit');
 
 if (!canapeStorage) {
@@ -12,6 +13,7 @@ if (!canapeStorage) {
 let canapeStorageJSON = JSON.parse(canapeStorage);
 
 //---récupération des données des produits via l'API
+
 for (let i = 0; i < canapeStorageJSON.length; i++){
 fetch("http://localhost:3000/api/products/" + canapeStorageJSON[i].idProduit )
  .then(function(res) {
@@ -56,38 +58,42 @@ let vanish = document.getElementsByClassName('cart__item__content__settings__del
 let quantite = document.getElementsByClassName('itemQuantity');
 
 //---fonction qui va permettre de supprimer l'objet du panier
+
 function suppress(){
     for (let i = 0; i < vanish.length; i++){
         vanish[i].addEventListener('click', ()=>{
-            vanish[i].closest('.cart__item')
+            vanish[i].closest('.cart__item__content__settings__delete')
+            console.log(vanish[i]);
             let check = canapeStorageJSON;
-            let erase = check.filter(p => p.idProduit != check.idProduit && p.color != check.color)
-            if (erase != undefined){
-                localStorage.setItem('produit', JSON.stringify(canapeStorageJSON))
-            }
-        })
-    }
-};
-console.log(canapeStorageJSON);
-//---fonction qui permets de modifier la quantité dans le panier
-function updateQuantite(){
-    for (let i = 0; i < quantite.length; i++){
-        quantite[i].addEventListener('change', ()=>{
-            quantite[i].closest('.cart__item__content__settings__quantity')
-            let check = canapeStorageJSON;
-            let foundIndex = check.findIndex(p => p.idProduit != check.idProduit && p.color != check.color);
-            //console.log(foundIndex)
-            //console.log(quantite[i].closest('.cart__item__content__settings__quantity'))
-            if (foundIndex != undefined){
-                check[foundIndex].quantite = quantite[i].value;
-                //console.log(check[foundIndex].quantite)
-                localStorage.setItem('produit', JSON.stringify(canapeStorageJSON));
+            console.log(check[i])
+            let supr = check.splice(i, 1);
+            console.log(check)
+            localStorage.setItem('produit', JSON.stringify(check));
+            if (supr != null){
+                location.reload();
             }
         })
     }
 };
 
+//---fonction qui permets de modifier la quantité dans le panier
+
+function updateQuantite(){
+    for (let i = 0; i < quantite.length; i++){
+        quantite[i].addEventListener('change', ()=>{
+            quantite[i].closest('.cart__item__content__settings__quantity')
+            let check = canapeStorageJSON;
+            check[i].quantite = quantite[i].value;
+            localStorage.setItem('produit', JSON.stringify(check));
+            getTotalPrice();
+            getTotalQuantity();
+            location.reload();
+        })
+    }
+};
+
 //---fonction qui permet de calculer la quantité total
+
 function getTotalQuantity(){
     let basket = canapeStorageJSON;
     let number = 0;
@@ -100,6 +106,7 @@ function getTotalQuantity(){
 totalQuantity.innerHTML = getTotalQuantity();
 
 //---fonction qui va permettre de calculer le prix total
+
 function getTotalPrice(){
     let prix = 0;
     let basket = canapeStorageJSON;
@@ -111,23 +118,21 @@ function getTotalPrice(){
               }
           }).then(function(value){
             prix += parseInt(value.price * basket[i].quantite,10);
-            console.log(prix);
             totalPrice.innerHTML = prix;
-            //console.log(basket[i].quantite);
-            //console.log(value.price);
           })
     }
 };
 
 
 let form = document.querySelector(".cart__order__form");
-let msg = document.getElementById("firstNameErrorMsg");
+
 
 //--- Ecoute du Prénom
 
+let firstName
 form.firstName.addEventListener('change', function(){
     validFirstName(this);
-})
+});
 
 //---- Validation du Prénom
 
@@ -137,6 +142,7 @@ const validFirstName = function(inputFirstName){
     let firstNameError = inputFirstName.nextElementSibling;
     if (testFirstName) {
         firstNameError.innerHTML = 'Valide';
+        return inputFirstName.value
     } else {
         firstNameError.innerHTML = 'Erreur de notation';
     }
@@ -144,9 +150,10 @@ const validFirstName = function(inputFirstName){
 
 //--- Ecoute du Nom
 
+let lastName
 form.lastName.addEventListener('change', function(){
     validLastName(this);
-})
+});
 
 //---- Validation du Nom
 
@@ -156,6 +163,7 @@ const validLastName = function(inputLastName){
     let lastNameError = inputLastName.nextElementSibling;
     if (testLastName) {
         lastNameError.innerHTML = 'Valide';
+        return inputLastName.value
     } else {
         lastNameError.innerHTML = 'Erreur de notation';
     }
@@ -163,9 +171,10 @@ const validLastName = function(inputLastName){
 
 //--- Ecoute de l'adresse
 
+let address
 form.address.addEventListener('change', function(){
     validAddress(this);
-})
+});
 
 //--- Validation de l'adresse
 
@@ -175,16 +184,17 @@ const validAddress = function(inputAddress){
     let addressError = inputAddress.nextElementSibling;
     if (testAddress) {
         addressError.innerHTML = 'Valide';
+        return inputAddress.value
     } else {
         addressError.innerHTML = 'Erreur de notation';
     }
 };
 
 //--- Ecoute de la Ville
-
+let city
 form.city.addEventListener('change', function(){
     validCity(this);
-})
+});
 
 //--- Validation de la Ville
 
@@ -194,16 +204,17 @@ const validCity = function(inputCity){
     let cityError = inputCity.nextElementSibling;
     if (testCity) {
         cityError.innerHTML = 'Valide';
+        return inputCity.value
     } else {
         cityError.innerHTML = 'Erreur de notation';
     }
 };
 
 //--- Ecoute de l'Email
-
+let email
 form.email.addEventListener('change', function(){
-    validEmail(this);
-})
+    email = validEmail(this);
+});
 
 //--- Validation de l'Email
 
@@ -213,7 +224,52 @@ const validEmail = function(inputEmail){
     let emailError = inputEmail.nextElementSibling;
     if (testEmail) {
         emailError.innerHTML = 'Valide';
+        return inputEmail.value
     } else {
         emailError.innerHTML = 'Erreur de notation';
     }
 };
+
+//--- création d'un objet pour les informations de l'utilisateurs
+
+let contact = {
+    prenom: firstName,
+    nom: lastName,
+    adresse: address,
+    ville: city,
+    mail: email,   
+};
+
+let confirm ={
+    contact,
+    canapeStorageJSON,
+    orderid: canapeStorageJSON[0].idProduit,
+};
+
+//--- Requête Post pour la page confirmation
+
+
+document.querySelector("#order").addEventListener('click',function(e){
+    e.preventDefault()
+    fetch("http://localhost:3000/api/products/order", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(confirm),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+
+        console.log("abc")
+        // Après validation, on renvoi à la page confirmation
+        setTimeout(function() {
+            window.location.href = `/front/html/confirmation.html?commande=${data.orderId}`;
+        }, 3000);
+        console.log("cdx")
+        // On vide les différents storages
+        /*sessionStorage.clear();
+        localStorage.clear();*/
+      })
+});
