@@ -33,9 +33,9 @@ ajout.addEventListener('click', (event)=>{
     event.preventDefault()
 //----création du produit que je vais ajouter dans le panier
     let produit ={
-        idProduit: id,
+        _id: id,
         color: color.value,
-        quantite: number.value,
+        quantity: number.value,
     };
 
     saveProductLocalStorage = JSON.parse(localStorage.getItem("produit"));
@@ -56,9 +56,9 @@ saveProductLocalStorage = JSON.parse(localStorage.getItem("produit"));
 //----fonction qui va permettre de ne pas ajouter plusieurs fois le même produit
 function checkPanier(produit) {
     let check = saveProductLocalStorage;
-    let foundProduit = check.find(p => p.id == produit.id && p.color == produit.color);
+    let foundProduit = check.find(p => p._id == produit._id && p.color == produit.color);
     if (foundProduit != undefined) {
-        foundProduit.quantite++;
+        foundProduit.quantity = produit.quantity;
     } else {
         saveProductLocalStorage.push(produit);
     }

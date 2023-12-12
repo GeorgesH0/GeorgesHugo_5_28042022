@@ -15,7 +15,7 @@ let canapeStorageJSON = JSON.parse(canapeStorage);
 //---récupération des données des produits via l'API
 
 for (let i = 0; i < canapeStorageJSON.length; i++){
-fetch("http://localhost:3000/api/products/" + canapeStorageJSON[i].idProduit )
+fetch("http://localhost:3000/api/products/" + canapeStorageJSON[i]._id )
  .then(function(res) {
      if (res.ok) {
          return res.json()
@@ -34,7 +34,7 @@ fetch("http://localhost:3000/api/products/" + canapeStorageJSON[i].idProduit )
         let divSettings = "<div class=cart__item__content__settings>"
         let divQuantity = "<div class=cart__item__content__settings__quantity>"
         let quantity = "<p>Qté : </p>"
-        let numbers = "<input type=number class=itemQuantity name=itemQuantity min=1 max=100 value=" + canapeStorageJSON[i].quantite + ">"
+        let numbers = "<input type=number class=itemQuantity name=itemQuantity min=1 max=100 value=" + canapeStorageJSON[i].quantity + ">"
         let divQuantityClose = "</div>"
         let divDelete = "<div class=cart__item__content__settings__delete>"
         let supprimer = "<p class=deleteItem>Supprimer</p>"
@@ -63,11 +63,8 @@ function suppress(){
     for (let i = 0; i < vanish.length; i++){
         vanish[i].addEventListener('click', ()=>{
             vanish[i].closest('.cart__item__content__settings__delete')
-            console.log(vanish[i]);
             let check = canapeStorageJSON;
-            console.log(check[i])
             let supr = check.splice(i, 1);
-            console.log(check)
             localStorage.setItem('produit', JSON.stringify(check));
             if (supr != null){
                 location.reload();
@@ -83,7 +80,7 @@ function updateQuantite(){
         quantite[i].addEventListener('change', ()=>{
             quantite[i].closest('.cart__item__content__settings__quantity')
             let check = canapeStorageJSON;
-            check[i].quantite = quantite[i].value;
+            check[i].quantity = quantite[i].value;
             localStorage.setItem('produit', JSON.stringify(check));
             getTotalPrice();
             getTotalQuantity();
@@ -98,7 +95,7 @@ function getTotalQuantity(){
     let basket = canapeStorageJSON;
     let number = 0;
     for(let product of basket){
-        number += parseInt(product.quantite,10);
+        number += parseInt(product.quantity,10);
     }
     return number;
 };
@@ -111,13 +108,13 @@ function getTotalPrice(){
     let prix = 0;
     let basket = canapeStorageJSON;
     for(let i = 0; i < basket.length; i++){
-        fetch("http://localhost:3000/api/products/" + basket[i].idProduit )
+        fetch("http://localhost:3000/api/products/" + basket[i]._id )
           .then(function(res) {
               if (res.ok) {
                 return res.json()
               }
           }).then(function(value){
-            prix += parseInt(value.price * basket[i].quantite,10);
+            prix += parseInt(value.price * basket[i].quantity,10);
             totalPrice.innerHTML = prix;
           })
     }
@@ -215,7 +212,7 @@ let email
 form.email.addEventListener('change', function(){
     email = validEmail(this);
 });
-
+console.log(email)
 //--- Validation de l'Email
 
 const validEmail = function(inputEmail){
@@ -233,19 +230,18 @@ const validEmail = function(inputEmail){
 //--- création d'un objet pour les informations de l'utilisateurs
 
 let contact = {
-    prenom: firstName,
-    nom: lastName,
-    adresse: address,
-    ville: city,
-    mail: email,   
+    firstName: "firstName",
+    lastName: "lastName",
+    address: "address",
+    city: "city",
+    email: "email",   
 };
 
 let confirm ={
     contact,
-    canapeStorageJSON,
-    orderid: canapeStorageJSON[0].idProduit,
+    products : canapeStorageJSON,
 };
-
+console.log(confirm)
 //--- Requête Post pour la page confirmation
 
 
@@ -254,7 +250,6 @@ document.querySelector("#order").addEventListener('click',function(e){
     fetch("http://localhost:3000/api/products/order", {
       method: "POST",
       headers: {
-        Accept: "application/json",
         "Content-Type": "application/json",
       },
       body: JSON.stringify(confirm),
@@ -262,14 +257,13 @@ document.querySelector("#order").addEventListener('click',function(e){
       .then((res) => res.json())
       .then((data) => {
 
-        console.log("abc")
         // Après validation, on renvoi à la page confirmation
         setTimeout(function() {
-            window.location.href = `/front/html/confirmation.html?commande=${data.orderId}`;
+            //window.location.href = `/front/html/confirmation.html?commande=${data.orderId}`;
         }, 3000);
-        console.log("cdx")
         // On vide les différents storages
         /*sessionStorage.clear();
         localStorage.clear();*/
+        console.log(data)
       })
 });
